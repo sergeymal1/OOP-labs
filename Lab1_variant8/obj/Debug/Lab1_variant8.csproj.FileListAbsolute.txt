@@ -1,0 +1,8 @@
+C:\Проекти з ООП\Lab1_variant8\bin\Debug\Lab1_variant8.exe.config
+C:\Проекти з ООП\Lab1_variant8\bin\Debug\Lab1_variant8.exe
+C:\Проекти з ООП\Lab1_variant8\bin\Debug\Lab1_variant8.pdb
+C:\Проекти з ООП\Lab1_variant8\obj\Debug\Lab1_variant8.csproj.AssemblyReference.cache
+C:\Проекти з ООП\Lab1_variant8\obj\Debug\Lab1_variant8.csproj.CoreCompileInputs.cache
+C:\Проекти з ООП\Lab1_variant8\obj\Debug\Lab1_variant8.exe
+C:\Проекти з ООП\Lab1_variant8\obj\Debug\Lab1_variant8.pdb
+C:\Проекти з ООП\Lab1_variant8\obj\Debug\Lab1_variant8.exe.config

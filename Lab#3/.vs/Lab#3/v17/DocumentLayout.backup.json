@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\student.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|solutionrelative:student.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\interprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|solutionrelative:interprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\academicmobility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|solutionrelative:academicmobility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|c:\\\u043F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u043E\u043E\u043F\\lab#3\\researchwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CDDE0BD6-74E0-4523-B0AA-770DC956F73D}|Lab#3.csproj|solutionrelative:researchwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAK8AAAAAAAAAAAAcwBcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-08T23:14:29.334Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Student.cs",
+              "DocumentMoniker": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\Student.cs",
+              "RelativeDocumentMoniker": "Student.cs",
+              "ToolTip": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\Student.cs",
+              "RelativeToolTip": "Student.cs",
+              "ViewState": "AgIAAMYAAAAAAAAAAAAiwOEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-08T23:22:47.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AcademicMobility.cs",
+              "DocumentMoniker": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\AcademicMobility.cs",
+              "RelativeDocumentMoniker": "AcademicMobility.cs",
+              "ToolTip": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\AcademicMobility.cs",
+              "RelativeToolTip": "AcademicMobility.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwL0AAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-08T23:30:04.631Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "InterProgram.cs",
+              "DocumentMoniker": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\InterProgram.cs",
+              "RelativeDocumentMoniker": "InterProgram.cs",
+              "ToolTip": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\InterProgram.cs",
+              "RelativeToolTip": "InterProgram.cs",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAuwDwAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-08T23:30:21.021Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ResearchWork.cs",
+              "DocumentMoniker": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\ResearchWork.cs",
+              "RelativeDocumentMoniker": "ResearchWork.cs",
+              "ToolTip": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Lab#3\\ResearchWork.cs",
+              "RelativeToolTip": "ResearchWork.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIwAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-08T23:30:35.139Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

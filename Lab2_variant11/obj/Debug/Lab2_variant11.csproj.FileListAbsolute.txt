@@ -1,0 +1,8 @@
+C:\Проекти з ООП\Lab2_variant11\bin\Debug\Lab2_variant11.exe.config
+C:\Проекти з ООП\Lab2_variant11\bin\Debug\Lab2_variant11.exe
+C:\Проекти з ООП\Lab2_variant11\bin\Debug\Lab2_variant11.pdb
+C:\Проекти з ООП\Lab2_variant11\obj\Debug\Lab2_variant11.csproj.AssemblyReference.cache
+C:\Проекти з ООП\Lab2_variant11\obj\Debug\Lab2_variant11.csproj.CoreCompileInputs.cache
+C:\Проекти з ООП\Lab2_variant11\obj\Debug\Lab2_variant11.exe
+C:\Проекти з ООП\Lab2_variant11\obj\Debug\Lab2_variant11.pdb
+C:\Проекти з ООП\Lab2_variant11\obj\Debug\Lab2_variant11.exe.config

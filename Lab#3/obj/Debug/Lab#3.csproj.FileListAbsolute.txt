@@ -1,0 +1,8 @@
+C:\Проекти з ООП\Lab#3\obj\Debug\Lab#3.csproj.AssemblyReference.cache
+C:\Проекти з ООП\Lab#3\obj\Debug\Lab#3.csproj.CoreCompileInputs.cache
+C:\Проекти з ООП\Lab#3\bin\Debug\Lab#3.exe.config
+C:\Проекти з ООП\Lab#3\bin\Debug\Lab#3.exe
+C:\Проекти з ООП\Lab#3\bin\Debug\Lab#3.pdb
+C:\Проекти з ООП\Lab#3\obj\Debug\Lab#3.exe
+C:\Проекти з ООП\Lab#3\obj\Debug\Lab#3.pdb
+C:\Проекти з ООП\Lab#3\obj\Debug\Lab#3.exe.config

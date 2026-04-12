@@ -1,0 +1,8 @@
+C:\Проекти з ООП\Lab#6\obj\Debug\Lab#6.csproj.AssemblyReference.cache
+C:\Проекти з ООП\Lab#6\obj\Debug\Lab#6.csproj.CoreCompileInputs.cache
+C:\Проекти з ООП\Lab#6\bin\Debug\Lab#6.exe.config
+C:\Проекти з ООП\Lab#6\bin\Debug\Lab#6.exe
+C:\Проекти з ООП\Lab#6\bin\Debug\Lab#6.pdb
+C:\Проекти з ООП\Lab#6\obj\Debug\Lab#6.exe
+C:\Проекти з ООП\Lab#6\obj\Debug\Lab#6.pdb
+C:\Проекти з ООП\Lab#6\obj\Debug\Lab#6.exe.config
