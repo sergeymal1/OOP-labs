@@ -3,15 +3,15 @@
   "WorkspaceRootPath": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Smart-portal\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8311DBDD-8CCF-41D0-BFBA-1542DB40E62A}|Smart-portal.csproj|C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Smart-portal\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8311DBDD-8CCF-41D0-BFBA-1542DB40E62A}|Smart-portal.csproj|c:\\\u043F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u043E\u043E\u043F\\smart-portal\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8311DBDD-8CCF-41D0-BFBA-1542DB40E62A}|Smart-portal.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8311DBDD-8CCF-41D0-BFBA-1542DB40E62A}|Smart-portal.csproj|c:\\\u043F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u043E\u043E\u043F\\smart-portal\\smartportal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8311DBDD-8CCF-41D0-BFBA-1542DB40E62A}|Smart-portal.csproj|C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Smart-portal\\smartportal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8311DBDD-8CCF-41D0-BFBA-1542DB40E62A}|Smart-portal.csproj|solutionrelative:smartportal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8311DBDD-8CCF-41D0-BFBA-1542DB40E62A}|Smart-portal.csproj|c:\\\u043F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u043E\u043E\u043F\\smart-portal\\appeal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8311DBDD-8CCF-41D0-BFBA-1542DB40E62A}|Smart-portal.csproj|C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Smart-portal\\appeal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8311DBDD-8CCF-41D0-BFBA-1542DB40E62A}|Smart-portal.csproj|solutionrelative:appeal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -36,7 +36,7 @@
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Smart-portal\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABDAAAAAAAAAA==",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAwwJcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-14T19:37:54.303Z",
               "EditorCaption": ""
@@ -49,7 +49,7 @@
               "RelativeDocumentMoniker": "Citizen.cs",
               "ToolTip": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Smart-portal\\Citizen.cs",
               "RelativeToolTip": "Citizen.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAmwFgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-14T19:40:23.354Z",
               "EditorCaption": ""
@@ -62,7 +62,7 @@
               "RelativeDocumentMoniker": "Appeal.cs",
               "ToolTip": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Smart-portal\\Appeal.cs",
               "RelativeToolTip": "Appeal.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAcwF8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-14T19:40:58.968Z",
               "EditorCaption": ""
@@ -75,7 +75,7 @@
               "RelativeDocumentMoniker": "SmartPortal.cs",
               "ToolTip": "C:\\\u041F\u0440\u043E\u0435\u043A\u0442\u0438 \u0437 \u041E\u041E\u041F\\Smart-portal\\SmartPortal.cs",
               "RelativeToolTip": "SmartPortal.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAcwLwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-14T20:30:18.315Z",
               "EditorCaption": ""
