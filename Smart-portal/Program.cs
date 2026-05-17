@@ -1,54 +1,152 @@
-﻿using SmartPortal.Core;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
+using SmartPortal.Core;
 
 namespace SmartPortalApp
 {
     class Program
     {
+        static SmartPortal.Core.SmartPortal portal;
+        static Citizen currentUser = null;  // той, хто зараз увійшов
+
         static void Main(string[] args)
         {
-
             Console.OutputEncoding = Encoding.GetEncoding(1251);
             Console.InputEncoding = Encoding.GetEncoding(1251);
 
-            var portal = new SmartPortal.Core.SmartPortal("Київ");
-            Console.WriteLine($"Smart-портал міста {portal.CityName} запущено\n");
+            // Запуск порталу — файли лежать поруч із програмою
+            portal = new SmartPortal.Core.SmartPortal("Київ", "citizens.txt", "appeals.txt");
+            Console.WriteLine($"=== Smart-портал міста {portal.CityName} ===\n");
 
-            // Створюємо громадян ззовні
-            var citizen1 = new Citizen("C001", "Іван", "Петренко");
-            citizen1.Address = "вул. Хрещатик, 1";
-            citizen1.Phone = "+380501234567";
-
-            var citizen2 = new Citizen("C002", "Марія", "Коваленко");
-            citizen2.Address = "вул. Грушевського, 5";
-            citizen2.Phone = "+380671112233";
-
-            portal.RegisterCitizen(citizen1);
-            portal.RegisterCitizen(citizen2);
-
-            Console.WriteLine();
-
-            // Звернення створюються всередині порталу
-            portal.CreateAppeal("A001", citizen1, "Не працює ліфт у під'їзді");
-            portal.CreateAppeal("A002", citizen2, "Відсутнє освітлення на дитячому майданчику");
-            portal.CreateAppeal("A003", citizen1, "Яма на дорозі біля будинку");
-
-            Console.WriteLine();
-
-            portal.UpdateAppealStatus("A001", AppealStatus.InProgress, "ЖЕК №5");
-
-            Console.WriteLine();
-
-            // Пошук звернень через посилання на автора
-            Console.WriteLine($"Звернення громадянина {citizen1.LastName}:");
-            var citizenAppeals = portal.GetAppealsByCitizen(citizen1);
-            foreach (var appeal in citizenAppeals)
+            // Головне меню
+            while (true)
             {
-                Console.WriteLine($"  {appeal}");
+                Console.WriteLine("\nОберіть дію:");
+                Console.WriteLine("1 — Увійти в систему (за ID)");
+                Console.WriteLine("2 — Подати нове звернення");
+                Console.WriteLine("3 — Переглянути мої звернення");
+                Console.WriteLine("4 — Вийти з акаунту");
+                Console.WriteLine("0 — Завершити роботу");
+                Console.Write("Ваш вибір: ");
+
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        Login();
+                        break;
+                    case "2":
+                        CreateAppeal();
+                        break;
+                    case "3":
+                        ShowMyAppeals();
+                        break;
+                    case "4":
+                        Logout();
+                        break;
+                    case "0":
+                        Console.WriteLine("До побачення!");
+                        return;
+                    default:
+                        Console.WriteLine("Невідома команда, спробуйте ще раз");
+                        break;
+                }
+            }
+        }
+
+        // Вхід за ID — ідентифікація громадянина
+        static void Login()
+        {
+            Console.Write("Введіть ваш ID: ");
+            string id = Console.ReadLine();
+
+            Citizen citizen = portal.FindCitizenById(id);
+
+            if (citizen == null)
+            {
+                Console.WriteLine("Громадянина з таким ID не знайдено");
+                return;
             }
 
-            Console.ReadLine();
+            currentUser = citizen;
+            Console.WriteLine($"Добрий день, {citizen.FirstName} {citizen.LastName}!");
+
+            // Показуємо історію звернень
+            var history = portal.GetAppealsByCitizenId(citizen.Id);
+            if (history.Count > 0)
+            {
+                Console.WriteLine($"\nВаша історія звернень ({history.Count}):");
+                foreach (var a in history)
+                {
+                    Console.WriteLine($"  {a}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("\nУ вас поки немає звернень");
+            }
+        }
+
+        // Подання нового звернення
+        static void CreateAppeal()
+        {
+            if (currentUser == null)
+            {
+                Console.WriteLine("Спочатку увійдіть у систему (пункт 1)");
+                return;
+            }
+
+            Console.Write("Опишіть вашу проблему: ");
+            string content = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                Console.WriteLine("Текст звернення не може бути порожнім");
+                return;
+            }
+
+            portal.CreateAppeal(currentUser, content);
+            Console.WriteLine("Ваше звернення прийнято!");
+        }
+
+        // Перегляд своїх звернень
+        static void ShowMyAppeals()
+        {
+            if (currentUser == null)
+            {
+                Console.WriteLine("Спочатку увійдіть у систему (пункт 1)");
+                return;
+            }
+
+            var myAppeals = portal.GetAppealsByCitizenId(currentUser.Id);
+
+            if (myAppeals.Count == 0)
+            {
+                Console.WriteLine("У вас немає звернень");
+                return;
+            }
+
+            Console.WriteLine($"\nВаші звернення ({myAppeals.Count}):");
+            foreach (var a in myAppeals)
+            {
+                Console.WriteLine($"  {a}");
+            }
+        }
+
+        // Вихід із акаунту
+        static void Logout()
+        {
+            if (currentUser != null)
+            {
+                Console.WriteLine($"До побачення, {currentUser.FirstName}!");
+                currentUser = null;
+            }
+            else
+            {
+                Console.WriteLine("Ви не входили в систему");
+            }
         }
     }
 }

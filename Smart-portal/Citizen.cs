@@ -11,13 +11,11 @@ namespace SmartPortal.Core
         private string email;
         private string id;
 
-        // Id тільки для читання
         public string Id
         {
             get { return id; }
         }
 
-        // Не дозволяє порожнє ім'я
         public string FirstName
         {
             get { return firstName; }
@@ -58,7 +56,6 @@ namespace SmartPortal.Core
             set { email = value; }
         }
 
-        // Поля через конструктор
         public Citizen(string id, string firstName, string lastName)
         {
             this.id = id;
@@ -66,7 +63,24 @@ namespace SmartPortal.Core
             LastName = lastName;
         }
 
-        // Вивід в консоль
+        // Новий конструктор — створює громадянина одразу з усіма даними з файлу
+        public Citizen(string id, string firstName, string lastName,
+                       string address, string phone, string email)
+        {
+            this.id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            this.address = address;
+            this.phone = phone;
+            this.email = email;
+        }
+
+        // Перетворює громадянина в рядок для запису у файл
+        public string ToFileString()
+        {
+            return $"{Id};{FirstName};{LastName};{Address};{Phone};{Email}";
+        }
+
         public override string ToString()
         {
             return $"{LastName} {FirstName} (ID: {Id})";
