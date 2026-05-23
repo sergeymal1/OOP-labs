@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;  // для роботи з файлами
+using SmartPortal.Core.Exceptions;
 
 namespace SmartPortal.Core
 {
@@ -123,7 +124,7 @@ namespace SmartPortal.Core
                 if (c.Id == id)
                     return c;
             }
-            return null;
+            throw new CitizenNotFoundException(id);
         }
 
         // Отримати історію звернень громадянина
@@ -138,22 +139,31 @@ namespace SmartPortal.Core
             return result;
         }
 
-        // Створення нового звернення (ID генерується автоматично)
         public Appeal CreateAppeal(Citizen author, string content)
+
         {
+            if (author == null)
+                throw new ArgumentNullException(nameof(author));
+
+            if (string.IsNullOrWhiteSpace(content))
+                throw new EmptyContentException();
+
+            // Перевірка ліміту звернень
+            var existingAppeals = GetAppealsByCitizenId(author.Id);
+            if (existingAppeals.Count >= Constants.MaxAppealsPerCitizen)
+                throw new MaxAppealsExceededException(author.Id, Constants.MaxAppealsPerCitizen);
+
             appealCounter++;
-            string id = $"A{appealCounter:D3}";  // A001, A002...
+            string id = $"A{appealCounter:D3}";
 
             var appeal = new Appeal(id, author.Id, $"{author.LastName} {author.FirstName}", content);
             appeals.Add(appeal);
-
-            // Одразу зберігаємо у файл
             SaveAppeals();
 
             Console.WriteLine($"Створено: {appeal}");
             return appeal;
-        }
 
+        }
         // Зміна статусу звернення
         public void UpdateAppealStatus(string appealId, AppealStatus newStatus, string executor)
         {
@@ -163,26 +173,30 @@ namespace SmartPortal.Core
                 {
                     a.Status = newStatus;
                     a.Executor = executor;
-                    SaveAppeals();  // зберігаємо зміни у файл
+                    SaveAppeals();
                     Console.WriteLine($"Статус звернення #{appealId} змінено на {newStatus}");
                     return;
                 }
             }
-            throw new Exception($"Звернення з ID {appealId} не знайдено");
+            throw new AppealNotFoundException(appealId);
         }
 
         // Реєстрація нового громадянина
         public void RegisterCitizen(Citizen citizen)
         {
             if (citizen == null)
-                throw new ArgumentNullException("Громадянин не може бути null");
+                throw new ArgumentNullException(nameof(citizen));
+
+            // Перевірка на дублікат
+            foreach (var c in citizens)
+            {
+                if (c.Id == citizen.Id)
+                    throw new DuplicateCitizenException(citizen.Id);
+            }
 
             citizens.Add(citizen);
-
-            // Дописуємо в кінець файлу
             File.AppendAllText(citizensFile, citizen.ToFileString() + Environment.NewLine,
                                System.Text.Encoding.GetEncoding(1251));
-
             Console.WriteLine($"Зареєстровано: {citizen}");
         }
 
