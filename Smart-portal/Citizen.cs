@@ -75,6 +75,14 @@ namespace SmartPortal.Core
             this.email = email;
         }
 
+        // Конструктор за замовчуванням
+        public Citizen()
+        {
+            this.id = Guid.NewGuid().ToString().Substring(0, 8);
+            this.firstName = "Невідомо";
+            this.lastName = "Невідомо";
+        }
+
         // Перетворює громадянина в рядок для запису у файл
         public string ToFileString()
         {
@@ -84,6 +92,42 @@ namespace SmartPortal.Core
         public override string ToString()
         {
             return $"{LastName} {FirstName} (ID: {Id})";
+        }
+
+        // Предикатна функція — чи є контактний телефон
+        public bool HasPhone()
+        {
+            return !string.IsNullOrWhiteSpace(Phone);
+        }
+
+        // Предикатна функція — чи є email
+        public bool HasEmail()
+        {
+            return !string.IsNullOrWhiteSpace(Email);
+        }
+
+        // Перевантаження оператора == (порівняння за ID)
+        public static bool operator ==(Citizen a, Citizen b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b is null) return false;
+            return a.Id == b.Id;
+        }
+        public static bool operator !=(Citizen a, Citizen b)
+        {
+            return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Citizen other)
+                return this == other;
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
     }
 }
