@@ -185,5 +185,16 @@ namespace SmartPortal.Core
 
             Console.WriteLine($"Зареєстровано: {citizen}");
         }
+
+        // Додавання готового звернення (для UrgentAppeal)
+        public void AddAppeal(Appeal appeal)
+        {
+            if (appeal == null)
+                throw new ArgumentNullException("Звернення не може бути null");
+
+            appeals.Add(appeal);
+            SaveAppeals();
+            Console.WriteLine($"Створено: {appeal}");
+        }
     }
 }

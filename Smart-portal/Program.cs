@@ -15,7 +15,8 @@ namespace SmartPortalApp
             Console.OutputEncoding = Encoding.GetEncoding(1251);
             Console.InputEncoding = Encoding.GetEncoding(1251);
 
-            portal = new SmartPortal.Core.SmartPortal("Київ", "citizens.txt", "appeals.txt");
+            portal = new SmartPortal.Core.SmartPortal(Messages.WelcomeMessage.Split(' ')[3],
+                         Constants.CitizensFileName, Constants.AppealsFileName);
             Console.WriteLine($"=== Smart-портал міста {portal.CityName} ===\n");
 
             while (true)
@@ -37,10 +38,10 @@ namespace SmartPortalApp
                         case "2": ShowAllCitizens(); break;
                         case "3": RegisterNewCitizen(); break;
                         case "0":
-                            Console.WriteLine("До побачення!");
+                            Console.WriteLine(Messages.Goodbye + "!");
                             return;
                         default:
-                            Console.WriteLine("Невідома команда");
+                            Console.WriteLine(Messages.UnknownCommand);
                             break;
                     }
                 }
@@ -49,15 +50,16 @@ namespace SmartPortalApp
                     switch (choice)
                     {
                         case "1": CreateAppeal(); break;
-                        case "2": ShowMyAppeals(); break;
-                        case "3": CheckAppealStatus(); break;
-                        case "4": ShowAllCitizens(); break;
-                        case "5": Logout(); break;
+                        case "2": CreateUrgentAppeal(); break;
+                        case "3": ShowMyAppeals(); break;
+                        case "4": CheckAppealStatus(); break;
+                        case "5": ShowAllCitizens(); break;
+                        case "6": Logout(); break;
                         case "0":
-                            Console.WriteLine("До побачення!");
+                            Console.WriteLine(Messages.Goodbye + "!");
                             return;
                         default:
-                            Console.WriteLine("Невідома команда");
+                            Console.WriteLine(Messages.UnknownCommand);
                             break;
                     }
                 }
@@ -67,7 +69,7 @@ namespace SmartPortalApp
         static void ShowGuestMenu()
         {
             Console.WriteLine("\n========================================");
-            Console.WriteLine($"Вітаємо на порталі міста {portal.CityName}!");
+            Console.WriteLine($"{Messages.WelcomeMessage} {portal.CityName}!");
             Console.WriteLine("========================================");
             Console.WriteLine("1 — Увійти в систему (за ID)");
             Console.WriteLine("2 — Подивитись усіх зареєстрованих громадян");
@@ -78,13 +80,14 @@ namespace SmartPortalApp
         static void ShowUserMenu()
         {
             Console.WriteLine("\n========================================");
-            Console.WriteLine($"Добрий день, {currentUser.FirstName}!");
+            Console.WriteLine($"{Messages.GoodMorning}, {currentUser.FirstName}!");
             Console.WriteLine("========================================");
-            Console.WriteLine("1 — Подати нове звернення");
-            Console.WriteLine("2 — Переглянути мої звернення");
-            Console.WriteLine("3 — Переглянути статус конкретного звернення");
-            Console.WriteLine("4 — Подивитись усіх зареєстрованих громадян");
-            Console.WriteLine("5 — Вийти з акаунту");
+            Console.WriteLine("1 — Подати звичайне звернення");
+            Console.WriteLine("2 — Подати термінове звернення");
+            Console.WriteLine("3 — Переглянути мої звернення");
+            Console.WriteLine("4 — Переглянути статус звернення");
+            Console.WriteLine("5 — Подивитись усіх зареєстрованих громадян");
+            Console.WriteLine("6 — Вийти з акаунту");
             Console.WriteLine("0 — Завершити роботу");
         }
 
@@ -97,12 +100,12 @@ namespace SmartPortalApp
 
             if (citizen == null)
             {
-                Console.WriteLine("Громадянина з таким ID не знайдено");
+                Console.WriteLine(Messages.CitizenNotFound);
                 return;
             }
 
             currentUser = citizen;
-            Console.WriteLine($"\nДобрий день, {citizen.FirstName} {citizen.LastName}!");
+            Console.WriteLine($"\n{Messages.GoodMorning}, {citizen.FirstName} {citizen.LastName}!");
 
             var history = portal.GetAppealsByCitizenId(citizen.Id);
             if (history.Count > 0)
@@ -113,26 +116,62 @@ namespace SmartPortalApp
             }
             else
             {
-                Console.WriteLine("У вас поки немає звернень");
+                Console.WriteLine(Messages.NoAppeals);
             }
         }
 
         static void CreateAppeal()
         {
-            Console.WriteLine("Вас вітає система подання звернень!");
-            Console.WriteLine("Опишіть вашу проблему (одним рядком):");
+            Console.WriteLine("Опишіть вашу проблему:");
             Console.Write("> ");
             string content = Console.ReadLine();
 
-            if (string.IsNullOrWhiteSpace(content))
+            if (string.IsNullOrWhiteSpace(content) || content.Length > Constants.MaxContentLength)
             {
-                Console.WriteLine("Текст звернення не може бути порожнім");
+                Console.WriteLine(Messages.EmptyContent);
                 return;
             }
 
             Appeal appeal = portal.CreateAppeal(currentUser, content);
-            Console.WriteLine($"\nВаше звернення зареєстровано під номером {appeal.Id}");
-            Console.WriteLine("Очікуйте на відповідь. Статус можна перевірити в меню (пункт 3)");
+            Console.WriteLine($"\n{Messages.AppealCreated} {appeal.Id}");
+            Console.WriteLine(Messages.WaitResponse);
+        }
+
+        static void CreateUrgentAppeal()
+        {
+            Console.WriteLine("=== Термінове звернення ===");
+            Console.Write("Опишіть проблему: ");
+            string content = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                Console.WriteLine(Messages.EmptyContent);
+                return;
+            }
+
+            Console.Write("Причина терміновості: ");
+            string reason = Console.ReadLine();
+
+            Console.Write("Крайній термін (днів від сьогодні): ");
+            if (!int.TryParse(Console.ReadLine(), out int days) || days < 1)
+            {
+                Console.WriteLine("Некоректна кількість днів");
+                return;
+            }
+
+            // Створюємо термінове звернення через портал
+            int counter = portal.Appeals.Count + 1;
+            string id = $"A{counter:D3}";
+            var urgent = new UrgentAppeal(id, currentUser.Id,
+                           $"{currentUser.LastName} {currentUser.FirstName}",
+                           content, DateTime.Now.AddDays(days), reason);
+
+            // Додаємо вручну, бо CreateAppeal повертає звичайний Appeal
+            portal.AddAppeal(urgent);
+
+            Console.WriteLine($"\n{Messages.AppealCreated} {urgent.Id}");
+            Console.WriteLine($"Термін виконання: {urgent.Deadline:dd.MM.yyyy}");
+            Console.WriteLine(Messages.WaitResponse);
         }
 
         static void ShowMyAppeals()
@@ -141,7 +180,7 @@ namespace SmartPortalApp
 
             if (myAppeals.Count == 0)
             {
-                Console.WriteLine("У вас немає звернень");
+                Console.WriteLine(Messages.NoAppeals);
                 return;
             }
 
@@ -154,7 +193,7 @@ namespace SmartPortalApp
 
         static void CheckAppealStatus()
         {
-            Console.Write("Введіть номер звернення (наприклад A001): ");
+            Console.Write("Введіть номер звернення: ");
             string id = Console.ReadLine();
 
             var myAppeals = portal.GetAppealsByCitizenId(currentUser.Id);
@@ -171,7 +210,7 @@ namespace SmartPortalApp
 
             if (found == null)
             {
-                Console.WriteLine("Звернення з таким номером не знайдено серед ваших");
+                Console.WriteLine(Messages.AppealNotFound);
                 return;
             }
 
@@ -179,8 +218,24 @@ namespace SmartPortalApp
             Console.WriteLine($"  Номер: {found.Id}");
             Console.WriteLine($"  Зміст: {found.Content}");
             Console.WriteLine($"  Статус: {found.Status}");
-            Console.WriteLine($"  Виконавець: {(string.IsNullOrEmpty(found.Executor) ? "не призначено" : found.Executor)}");
+            Console.WriteLine($"  Виконавець: {(string.IsNullOrEmpty(found.Executor) ? Constants.DefaultExecutor : found.Executor)}");
             Console.WriteLine($"  Дата: {found.CreatedDate:dd.MM.yyyy}");
+
+            // Якщо термінове — показуємо додаткову інформацію
+            if (found is UrgentAppeal urgent)
+            {
+                Console.WriteLine($"  Тип: ТЕРМІНОВЕ");
+                Console.WriteLine($"  Крайній термін: {urgent.Deadline:dd.MM.yyyy}");
+                Console.WriteLine($"  Причина: {urgent.UrgencyReason}");
+                if (urgent.IsOverdue())
+                    Console.WriteLine("  УВАГА: Звернення прострочено!");
+            }
+
+            // Предикатні функції
+            if (found.IsResolved())
+                Console.WriteLine("  Це звернення вирішено");
+            if (found.IsActive())
+                Console.WriteLine("  Це звернення активне");
         }
 
         static void RegisterNewCitizen()
@@ -230,7 +285,7 @@ namespace SmartPortalApp
 
         static void Logout()
         {
-            Console.WriteLine($"До побачення, {currentUser.FirstName}!");
+            Console.WriteLine($"{Messages.Goodbye}, {currentUser.FirstName}!");
             currentUser = null;
         }
     }
