@@ -81,6 +81,27 @@ namespace SmartPortal.Core
             this.executor = executor;
         }
 
+        // Конструктор за замовчуванням
+        public Appeal()
+        {
+            this.id = Guid.NewGuid().ToString().Substring(0, 8);
+            this.content = "";
+            this.createdDate = DateTime.Now;
+            this.status = AppealStatus.New;
+        }
+
+        // Конструктор копій
+        public Appeal(Appeal other)
+        {
+            this.id = other.id;
+            this.citizenId = other.citizenId;
+            this.authorName = other.authorName;
+            this.content = other.content;
+            this.createdDate = other.createdDate;
+            this.status = other.status;
+            this.executor = other.executor;
+        }
+
         // Перетворює звернення в рядок для запису у файл
         public string ToFileString()
         {
@@ -91,6 +112,45 @@ namespace SmartPortal.Core
         {
             string exec = string.IsNullOrEmpty(Executor) ? "не призначено" : Executor;
             return $"Звернення #{Id} | Автор: {AuthorName} | Статус: {Status} | Виконавець: {exec} | Дата: {CreatedDate:dd.MM.yyyy}";
+        }
+
+        // Чи звернення вирішено (предикатні функції)
+        public bool IsResolved()
+        {
+            return Status == AppealStatus.Resolved;
+        }
+
+        // Чи звернення активне (ще не закрите)
+        public bool IsActive()
+        {
+            return Status == AppealStatus.New || Status == AppealStatus.InProgress;
+        }
+
+        // Перевантаження оператора == (порівняння за ID)
+        public static bool operator ==(Appeal a, Appeal b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b is null) return false;
+            return a.Id == b.Id;
+        }
+
+        // Перевантаження оператора != (має бути парою з ==)
+        public static bool operator !=(Appeal a, Appeal b)
+        {
+            return !(a == b);
+        }
+
+        // Перевантаження Equals — обов'язково разом із ==
+        public override bool Equals(object obj)
+        {
+            if (obj is Appeal other)
+                return this == other;
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
     }
 }
