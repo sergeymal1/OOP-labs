@@ -6,3 +6,11 @@ C:\Проекти з ООП\Smart-portal\obj\Debug\Smart-portal.csproj.CoreCompi
 C:\Проекти з ООП\Smart-portal\obj\Debug\Smart-portal.exe
 C:\Проекти з ООП\Smart-portal\obj\Debug\Smart-portal.pdb
 C:\Проекти з ООП\Smart-portal\obj\Debug\Smart-portal.exe.config
+C:\Git repos\OOP-labs\Smart-portal\bin\Debug\Smart-portal.exe.config
+C:\Git repos\OOP-labs\Smart-portal\bin\Debug\Smart-portal.exe
+C:\Git repos\OOP-labs\Smart-portal\bin\Debug\Smart-portal.pdb
+C:\Git repos\OOP-labs\Smart-portal\obj\Debug\Smart-portal.csproj.AssemblyReference.cache
+C:\Git repos\OOP-labs\Smart-portal\obj\Debug\Smart-portal.exe.config
+C:\Git repos\OOP-labs\Smart-portal\obj\Debug\Smart-portal.csproj.CoreCompileInputs.cache
+C:\Git repos\OOP-labs\Smart-portal\obj\Debug\Smart-portal.exe
+C:\Git repos\OOP-labs\Smart-portal\obj\Debug\Smart-portal.pdb

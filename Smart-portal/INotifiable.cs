@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Smart_portal
+﻿namespace SmartPortal.Core
 {
-    internal class INotifiable
+    // Інтерфейс для об'єктів, які можуть надсилати сповіщення
+    public interface INotifiable
     {
+        // Метод, який має реалізувати кожен клас, що підтримує сповіщення
+        string GetNotificationMessage();
     }
 }
