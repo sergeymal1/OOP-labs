@@ -180,7 +180,7 @@ namespace SmartPortalApp
                     {
                         Console.WriteLine(Messages.NoAppeals);
                     }
-                    return;
+                    return;  // успішний вхід — виходимо з циклу
                 }
                 catch (CitizenNotFoundException ex)
                 {
@@ -200,64 +200,82 @@ namespace SmartPortalApp
 
         static void CreateAppeal()
         {
-            try
+            while (true)
             {
-                Console.WriteLine("Опишіть вашу проблему:");
-                Console.Write("> ");
-                string content = SafeReadLine();
-                Appeal appeal = portal.CreateAppeal(currentUser, content);
-                Console.WriteLine($"\n{Messages.AppealCreated} {appeal.Id}");
-                Console.WriteLine(Messages.WaitResponse);
-            }
-            catch (EmptyContentException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (MaxAppealsExceededException ex)
-            {
-                Console.WriteLine(ex.Message);
+                try
+                {
+                    Console.WriteLine("Опишіть вашу проблему (або 0 для виходу в меню):");
+                    Console.Write("> ");
+                    string content = SafeReadLine();
+
+                    if (content == "0") return;
+
+                    Appeal appeal = portal.CreateAppeal(currentUser, content);
+                    Console.WriteLine($"\n{Messages.AppealCreated} {appeal.Id}");
+                    Console.WriteLine(Messages.WaitResponse);
+                    return;
+                }
+                catch (EmptyContentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Спробуйте ще раз або введіть 0 для виходу.\n");
+                }
+                catch (MaxAppealsExceededException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return;  // ліміт вичерпано — повертаємо в меню
+                }
             }
         }
 
         static void CreateUrgentAppeal()
         {
-            try
+            while (true)
             {
-                Console.WriteLine("=== Термінове звернення ===");
-                Console.Write("Опишіть проблему: ");
-                string content = SafeReadLine();
-
-                if (string.IsNullOrWhiteSpace(content))
+                try
                 {
-                    Console.WriteLine(Messages.EmptyContent);
+                    Console.WriteLine("=== Термінове звернення ===");
+                    Console.Write("Опишіть проблему (або 0 для виходу): ");
+                    string content = SafeReadLine();
+
+                    if (content == "0") return;
+
+                    if (string.IsNullOrWhiteSpace(content))
+                    {
+                        Console.WriteLine(Messages.EmptyContent);
+                        continue;
+                    }
+
+                    Console.Write("Причина терміновості: ");
+                    string reason = SafeReadLine();
+
+                    // Окремий цикл для введення терміну — не стирає попередні дані
+                    int days;
+                    while (true)
+                    {
+                        Console.Write("Крайній термін (днів від сьогодні): ");
+                        days = SafeReadInt(-1);
+                        if (days >= 1) break;
+                        Console.WriteLine("Некоректна кількість днів. Введіть число більше 0.");
+                    }
+
+                    int counter = portal.Appeals.Count + 1;
+                    string id = $"A{counter:D3}";
+                    var urgent = new UrgentAppeal(id, currentUser.Id,
+                                   $"{currentUser.LastName} {currentUser.FirstName}",
+                                   content, DateTime.Now.AddDays(days), reason);
+
+                    portal.AddAppeal(urgent);
+                    Console.WriteLine($"\n{Messages.AppealCreated} {urgent.Id}");
+                    Console.WriteLine($"Термін виконання: {urgent.Deadline:dd.MM.yyyy}");
+                    Console.WriteLine(Messages.WaitResponse);
                     return;
                 }
-
-                Console.Write("Причина терміновості: ");
-                string reason = SafeReadLine();
-
-                Console.Write("Крайній термін (днів від сьогодні): ");
-                int days = SafeReadInt(-1);
-                if (days < 1)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Некоректна кількість днів");
-                    return;
+                    Console.WriteLine($"Помилка: {ex.Message}");
+                    Console.WriteLine("Спробуйте ще раз.\n");
                 }
-
-                int counter = portal.Appeals.Count + 1;
-                string id = $"A{counter:D3}";
-                var urgent = new UrgentAppeal(id, currentUser.Id,
-                               $"{currentUser.LastName} {currentUser.FirstName}",
-                               content, DateTime.Now.AddDays(days), reason);
-
-                portal.AddAppeal(urgent);
-                Console.WriteLine($"\n{Messages.AppealCreated} {urgent.Id}");
-                Console.WriteLine($"Термін виконання: {urgent.Deadline:dd.MM.yyyy}");
-                Console.WriteLine(Messages.WaitResponse);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка: {ex.Message}");
             }
         }
 
@@ -278,11 +296,13 @@ namespace SmartPortalApp
 
         static void CheckAppealStatus()
         {
+            Console.Write("Введіть номер звернення (або 0 для виходу): ");
+            string id = SafeReadLine();
+
+            if (id == "0") return;
+
             try
             {
-                Console.Write("Введіть номер звернення: ");
-                string id = SafeReadLine();
-
                 var myAppeals = portal.GetAppealsByCitizenId(currentUser.Id);
                 Appeal found = null;
 
