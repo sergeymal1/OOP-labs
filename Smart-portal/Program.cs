@@ -37,7 +37,7 @@ namespace SmartPortalApp
                         ShowUserMenu();
 
                     Console.Write("Ваш вибір: ");
-                    string choice = Console.ReadLine();
+                    string choice = SafeReadLine();
                     Console.WriteLine();
 
                     if (currentUser == null)
@@ -47,6 +47,7 @@ namespace SmartPortalApp
                             case "1": Login(); break;
                             case "2": ShowAllCitizens(); break;
                             case "3": RegisterNewCitizen(); break;
+                            case "4": ShowDeputies(); break;
                             case "0":
                                 Console.WriteLine(Messages.Goodbye + "!");
                                 return;
@@ -64,7 +65,8 @@ namespace SmartPortalApp
                             case "3": ShowMyAppeals(); break;
                             case "4": CheckAppealStatus(); break;
                             case "5": ShowAllCitizens(); break;
-                            case "6": Logout(); break;
+                            case "6": ShowDeputies(); break;
+                            case "7": Logout(); break;
                             case "0":
                                 Console.WriteLine(Messages.Goodbye + "!");
                                 return;
@@ -91,6 +93,38 @@ namespace SmartPortalApp
             }
         }
 
+        // ========== БЕЗПЕЧНЕ ВВЕДЕННЯ ==========
+
+        static string SafeReadLine()
+        {
+            try
+            {
+                string input = Console.ReadLine();
+                return input ?? "";
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        static int SafeReadInt(int defaultValue = 1)
+        {
+            try
+            {
+                string input = Console.ReadLine();
+                if (int.TryParse(input, out int result))
+                    return result;
+                return defaultValue;
+            }
+            catch
+            {
+                return defaultValue;
+            }
+        }
+
+        // ========== МЕНЮ ==========
+
         static void ShowGuestMenu()
         {
             Console.WriteLine("\n========================================");
@@ -99,6 +133,7 @@ namespace SmartPortalApp
             Console.WriteLine("1 — Увійти в систему (за ID)");
             Console.WriteLine("2 — Подивитись усіх зареєстрованих громадян");
             Console.WriteLine("3 — Зареєструвати нового громадянина");
+            Console.WriteLine("4 — Подивитись депутатів");
             Console.WriteLine("0 — Завершити роботу");
         }
 
@@ -112,41 +147,56 @@ namespace SmartPortalApp
             Console.WriteLine("3 — Переглянути мої звернення");
             Console.WriteLine("4 — Переглянути статус звернення");
             Console.WriteLine("5 — Подивитись усіх зареєстрованих громадян");
-            Console.WriteLine("6 — Вийти з акаунту");
+            Console.WriteLine("6 — Подивитись депутатів");
+            Console.WriteLine("7 — Вийти з акаунту");
             Console.WriteLine("0 — Завершити роботу");
         }
 
+        // ========== АВТОРИЗАЦІЯ ==========
+
         static void Login()
         {
-            try
+            while (true)
             {
-                Console.Write("Введіть ваш ID: ");
-                string id = Console.ReadLine();
-                Citizen citizen = portal.FindCitizenById(id);
-                currentUser = citizen;
-                Console.WriteLine($"\n{Messages.GoodMorning}, {citizen.FirstName} {citizen.LastName}!");
+                try
+                {
+                    Console.Write("Введіть ваш ID (або 0 для виходу в меню): ");
+                    string id = SafeReadLine();
 
-                var history = portal.GetAppealsByCitizenId(citizen.Id);
-                if (history.Count > 0)
-                {
-                    Console.WriteLine($"У вас {history.Count} звернень.");
-                    Console.WriteLine($"Останнє: \"{history[history.Count - 1].Content}\"");
-                    Console.WriteLine($"Статус: {history[history.Count - 1].Status}");
+                    if (id == "0") return;
+
+                    Citizen citizen = portal.FindCitizenById(id);
+                    currentUser = citizen;
+                    Console.WriteLine($"\n{Messages.GoodMorning}, {citizen.FirstName} {citizen.LastName}!");
+
+                    var history = portal.GetAppealsByCitizenId(citizen.Id);
+                    if (history.Count > 0)
+                    {
+                        Console.WriteLine($"У вас {history.Count} звернень.");
+                        Console.WriteLine($"Останнє: \"{history[history.Count - 1].Content}\"");
+                        Console.WriteLine($"Статус: {history[history.Count - 1].Status}");
+                    }
+                    else
+                    {
+                        Console.WriteLine(Messages.NoAppeals);
+                    }
+                    return;
                 }
-                else
+                catch (CitizenNotFoundException ex)
                 {
-                    Console.WriteLine(Messages.NoAppeals);
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Спробуйте ще раз або введіть 0 для виходу.\n");
                 }
-            }
-            catch (CitizenNotFoundException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка входу: {ex.Message}");
             }
         }
+
+        static void Logout()
+        {
+            Console.WriteLine($"{Messages.Goodbye}, {currentUser.FirstName}!");
+            currentUser = null;
+        }
+
+        // ========== ЗВЕРНЕННЯ ==========
 
         static void CreateAppeal()
         {
@@ -154,7 +204,7 @@ namespace SmartPortalApp
             {
                 Console.WriteLine("Опишіть вашу проблему:");
                 Console.Write("> ");
-                string content = Console.ReadLine();
+                string content = SafeReadLine();
                 Appeal appeal = portal.CreateAppeal(currentUser, content);
                 Console.WriteLine($"\n{Messages.AppealCreated} {appeal.Id}");
                 Console.WriteLine(Messages.WaitResponse);
@@ -167,10 +217,6 @@ namespace SmartPortalApp
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка створення звернення: {ex.Message}");
-            }
         }
 
         static void CreateUrgentAppeal()
@@ -179,7 +225,7 @@ namespace SmartPortalApp
             {
                 Console.WriteLine("=== Термінове звернення ===");
                 Console.Write("Опишіть проблему: ");
-                string content = Console.ReadLine();
+                string content = SafeReadLine();
 
                 if (string.IsNullOrWhiteSpace(content))
                 {
@@ -188,10 +234,11 @@ namespace SmartPortalApp
                 }
 
                 Console.Write("Причина терміновості: ");
-                string reason = Console.ReadLine();
+                string reason = SafeReadLine();
 
                 Console.Write("Крайній термін (днів від сьогодні): ");
-                if (!int.TryParse(Console.ReadLine(), out int days) || days < 1)
+                int days = SafeReadInt(-1);
+                if (days < 1)
                 {
                     Console.WriteLine("Некоректна кількість днів");
                     return;
@@ -210,7 +257,7 @@ namespace SmartPortalApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Помилка створення звернення: {ex.Message}");
+                Console.WriteLine($"Помилка: {ex.Message}");
             }
         }
 
@@ -234,7 +281,7 @@ namespace SmartPortalApp
             try
             {
                 Console.Write("Введіть номер звернення: ");
-                string id = Console.ReadLine();
+                string id = SafeReadLine();
 
                 var myAppeals = portal.GetAppealsByCitizenId(currentUser.Id);
                 Appeal found = null;
@@ -258,7 +305,7 @@ namespace SmartPortalApp
                 Console.WriteLine($"  Номер: {found.Id}");
                 Console.WriteLine($"  Зміст: {found.Content}");
                 Console.WriteLine($"  Статус: {found.Status}");
-                Console.WriteLine($"  Виконавець: {(string.IsNullOrEmpty(found.Executor) ? Constants.DefaultExecutor : found.Executor)}");
+                Console.WriteLine($"  Виконавець: {(string.IsNullOrEmpty(found.Executor) ? Messages.NoExecutor : found.Executor)}");
                 Console.WriteLine($"  Дата: {found.CreatedDate:dd.MM.yyyy}");
 
                 if (found is UrgentAppeal urgent)
@@ -267,13 +314,13 @@ namespace SmartPortalApp
                     Console.WriteLine($"  Крайній термін: {urgent.Deadline:dd.MM.yyyy}");
                     Console.WriteLine($"  Причина: {urgent.UrgencyReason}");
                     if (urgent.IsOverdue())
-                        Console.WriteLine("  УВАГА: Звернення прострочено!");
+                        Console.WriteLine($"  {Messages.OverdueWarning}");
                 }
 
                 if (found.IsResolved())
-                    Console.WriteLine("  Це звернення вирішено");
+                    Console.WriteLine($"  {Messages.ResolvedInfo}");
                 if (found.IsActive())
-                    Console.WriteLine("  Це звернення активне");
+                    Console.WriteLine($"  {Messages.ActiveInfo}");
             }
             catch (Exception ex)
             {
@@ -281,13 +328,15 @@ namespace SmartPortalApp
             }
         }
 
+        // ========== РЕЄСТРАЦІЯ ==========
+
         static void RegisterNewCitizen()
         {
             try
             {
                 Console.WriteLine("=== Реєстрація нового громадянина ===");
                 Console.Write("ID (наприклад C006): ");
-                string id = Console.ReadLine();
+                string id = SafeReadLine();
 
                 try
                 {
@@ -298,15 +347,15 @@ namespace SmartPortalApp
                 catch (CitizenNotFoundException) { }
 
                 Console.Write("Ім'я: ");
-                string firstName = Console.ReadLine();
+                string firstName = SafeReadLine();
                 Console.Write("Прізвище: ");
-                string lastName = Console.ReadLine();
+                string lastName = SafeReadLine();
                 Console.Write("Адреса: ");
-                string address = Console.ReadLine();
+                string address = SafeReadLine();
                 Console.Write("Телефон: ");
-                string phone = Console.ReadLine();
+                string phone = SafeReadLine();
                 Console.Write("Email: ");
-                string email = Console.ReadLine();
+                string email = SafeReadLine();
 
                 var citizen = new Citizen(id, firstName, lastName, address, phone, email);
                 portal.RegisterCitizen(citizen);
@@ -326,6 +375,8 @@ namespace SmartPortalApp
             }
         }
 
+        // ========== ПЕРЕГЛЯД ==========
+
         static void ShowAllCitizens()
         {
             var citizens = portal.Citizens;
@@ -336,10 +387,14 @@ namespace SmartPortalApp
             }
         }
 
-        static void Logout()
+        static void ShowDeputies()
         {
-            Console.WriteLine($"{Messages.Goodbye}, {currentUser.FirstName}!");
-            currentUser = null;
+            var deputies = portal.Deputies;
+            Console.WriteLine($"=== Депутати ({deputies.Count}) ===");
+            foreach (var d in deputies)
+            {
+                Console.WriteLine($"  {d}");
+            }
         }
     }
 }

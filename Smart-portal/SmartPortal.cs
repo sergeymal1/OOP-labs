@@ -12,19 +12,18 @@ namespace SmartPortal.Core
         private List<Appeal> appeals;       // композиція: список звернень
         private List<Citizen> citizens;     // композиція: список громадян
         private List<Executor> executors;   // композиція: список виконавців
+        private List<Deputy> deputies;      // композиція: список депутатів
         private string cityName;            // назва міста
         private int appealCounter;          // лічильник для генерації ID звернень
-
-        // Шляхи до файлів даних
-        private string citizensFile;
-        private string appealsFile;
+        private string citizensFile;        // шлях до файлу громадян
+        private string appealsFile;         // шлях до файлу звернень
 
         public string CityName
         {
             get { return cityName; }
         }
 
-        // Повертає копії списків — захист від змін ззовні
+        // Повертають копії списків — захист від змін ззовні
         public List<Appeal> Appeals
         {
             get { return new List<Appeal>(appeals); }
@@ -40,6 +39,11 @@ namespace SmartPortal.Core
             get { return new List<Executor>(executors); }
         }
 
+        public List<Deputy> Deputies
+        {
+            get { return new List<Deputy>(deputies); }
+        }
+
         public SmartPortal(string cityName, string citizensFile, string appealsFile)
         {
             this.cityName = cityName;
@@ -48,15 +52,17 @@ namespace SmartPortal.Core
             this.appeals = new List<Appeal>();
             this.citizens = new List<Citizen>();
             this.executors = new List<Executor>();
+            this.deputies = new List<Deputy>();
             this.appealCounter = 0;
 
-            // Завантажуємо всі дані з файлів при запуску
+            // Завантаження всіх даних із файлів при запуску
             LoadCitizens();
             LoadAppeals();
             LoadExecutors();
+            LoadDeputies();
         }
 
-        // ========== ЗАВАНТАЖЕННЯ ДАНИХ ==========
+        // ========== ЗАВАНТАЖЕННЯ ==========
 
         private void LoadCitizens()
         {
@@ -104,7 +110,7 @@ namespace SmartPortal.Core
                     var appeal = new Appeal(id, citizenId, authorName, content, date, status, executor);
                     appeals.Add(appeal);
 
-                    // Оновлюємо лічильник
+                    // Оновлюємо лічильник із найбільшого ID у файлі
                     if (id.StartsWith("A") && int.TryParse(id.Substring(1), out int num))
                     {
                         if (num > appealCounter)
@@ -138,6 +144,29 @@ namespace SmartPortal.Core
             Console.WriteLine($"Завантажено {executors.Count} виконавців із файлу");
         }
 
+        // Завантаження депутатів із файлу deputies.txt
+        private void LoadDeputies()
+        {
+            string fileName = "deputies.txt";
+            if (!File.Exists(fileName))
+                return;
+
+            string[] lines = File.ReadAllLines(fileName, Encoding.GetEncoding(1251));
+            foreach (string line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                string[] parts = line.Split(';');
+                if (parts.Length >= 4)
+                {
+                    var deputy = new Deputy(parts[0], parts[1], parts[2], parts[3]);
+                    deputies.Add(deputy);
+                }
+            }
+            Console.WriteLine($"Завантажено {deputies.Count} депутатів із файлу");
+        }
+
         // ========== ЗБЕРЕЖЕННЯ ==========
 
         private void SaveAppeals()
@@ -152,6 +181,7 @@ namespace SmartPortal.Core
 
         // ========== ПОШУК ==========
 
+        // Пошук громадянина за ID — якщо не знайдено, кидає виняток
         public Citizen FindCitizenById(string id)
         {
             foreach (var c in citizens)
@@ -162,6 +192,7 @@ namespace SmartPortal.Core
             throw new CitizenNotFoundException(id);
         }
 
+        // Отримати всі звернення конкретного громадянина
         public List<Appeal> GetAppealsByCitizenId(string citizenId)
         {
             List<Appeal> result = new List<Appeal>();
@@ -175,7 +206,7 @@ namespace SmartPortal.Core
 
         // ========== ВИКОНАВЦІ ==========
 
-        // Автоматичний пошук вільного виконавця
+        // Автоматичний пошук вільного виконавця (у кого менше 5 звернень)
         public Executor AutoAssignExecutor()
         {
             foreach (var e in executors)
@@ -188,6 +219,7 @@ namespace SmartPortal.Core
 
         // ========== ЗВЕРНЕННЯ ==========
 
+        // Створення нового звернення з авто-призначенням виконавця
         public Appeal CreateAppeal(Citizen author, string content)
         {
             if (author == null)
@@ -196,7 +228,7 @@ namespace SmartPortal.Core
             if (string.IsNullOrWhiteSpace(content))
                 throw new EmptyContentException();
 
-            // Перевірка ліміту звернень
+            // Перевірка ліміту звернень на одного громадянина
             var existingAppeals = GetAppealsByCitizenId(author.Id);
             if (existingAppeals.Count >= Constants.MaxAppealsPerCitizen)
                 throw new MaxAppealsExceededException(author.Id, Constants.MaxAppealsPerCitizen);
@@ -222,6 +254,7 @@ namespace SmartPortal.Core
             return appeal;
         }
 
+        // Зміна статусу звернення
         public void UpdateAppealStatus(string appealId, AppealStatus newStatus, string executor)
         {
             foreach (var a in appeals)
@@ -262,6 +295,7 @@ namespace SmartPortal.Core
 
         // ========== РЕЄСТРАЦІЯ ==========
 
+        // Реєстрація нового громадянина з перевіркою на дублікат
         public void RegisterCitizen(Citizen citizen)
         {
             if (citizen == null)
