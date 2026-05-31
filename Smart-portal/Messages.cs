@@ -1,29 +1,75 @@
-﻿namespace SmartPortal.Core
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+
+namespace SmartPortal.Core
 {
-    // Файл із текстовими повідомленнями
     public static class Messages
     {
-        // Привітання
-        public const string WelcomeMessage = "Вітаємо на порталі міста";
-        public const string GoodMorning = "Добрий день";
-        public const string Goodbye = "До побачення";
+        private static JsonDocument doc;
+        private static readonly string FileName = "messages.json";
 
-        // Помилки
-        public const string CitizenNotFound = "Громадянина з таким ID не знайдено";
-        public const string AppealNotFound = "Звернення з таким номером не знайдено";
-        public const string NotLoggedIn = "Спочатку увійдіть у систему";
-        public const string EmptyContent = "Текст звернення не може бути порожнім";
-        public const string UnknownCommand = "Невідома команда";
+        // Статичний конструктор — завантажує JSON один раз
+        static Messages()
+        {
+            LoadMessages();
+        }
 
-        // Інформація
-        public const string AppealCreated = "Ваше звернення зареєстровано під номером";
-        public const string NoAppeals = "У вас поки немає звернень";
-        public const string WaitResponse = "Очікуйте на відповідь";
+        private static void LoadMessages()
+        {
+            try
+            {
+                if (File.Exists(FileName))
+                {
+                    string json = File.ReadAllText(FileName, Encoding.UTF8);
+                    doc = JsonDocument.Parse(json);
+                }
+                else
+                {
+                    // Файлу немає — використовуємо значення за замовчуванням
+                    doc = null;
+                }
+            }
+            catch
+            {
+                doc = null;
+            }
+        }
 
-        // Статуси
-        public const string StatusNew = "нове";
-        public const string StatusInProgress = "в роботі";
-        public const string StatusResolved = "вирішено";
-        public const string StatusRejected = "відхилено";
+        // Метод отримання рядка за ключем
+        public static string Get(string key)
+        {
+            if (doc == null)
+                return $"[{key}]";  // якщо JSON не завантажено
+
+            try
+            {
+                return doc.RootElement.GetProperty(key).GetString() ?? $"[{key}]";
+            }
+            catch
+            {
+                return $"[{key}]";
+            }
+        }
+
+        // Властивості для зворотної сумісності
+        public static string WelcomeMessage => Get("WelcomeMessage");
+        public static string GoodMorning => Get("GoodMorning");
+        public static string Goodbye => Get("Goodbye");
+        public static string CitizenNotFound => Get("CitizenNotFound");
+        public static string AppealNotFound => Get("AppealNotFound");
+        public static string NotLoggedIn => Get("NotLoggedIn");
+        public static string EmptyContent => Get("EmptyContent");
+        public static string UnknownCommand => Get("UnknownCommand");
+        public static string AppealCreated => Get("AppealCreated");
+        public static string NoAppeals => Get("NoAppeals");
+        public static string WaitResponse => Get("WaitResponse");
+        public static string OverdueWarning => Get("OverdueWarning");
+        public static string TypeUrgent => Get("TypeUrgent");
+        public static string ResolvedInfo => Get("ResolvedInfo");
+        public static string ActiveInfo => Get("ActiveInfo");
+        public static string NoExecutor => Get("NoExecutor");
+        public static string ExecutorAssigned => Get("ExecutorAssigned");
     }
 }
