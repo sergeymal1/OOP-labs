@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;  // для роботи з файлами
+using System.IO;
+using System.Text;
 using SmartPortal.Core.Exceptions;
 
 namespace SmartPortal.Core
 {
+    // Головний клас системи — керує всіма даними порталу
     public class SmartPortal
     {
-        private List<Appeal> appeals;
-        private List<Citizen> citizens;
-        private string cityName;
-        private int appealCounter;
+        private List<Appeal> appeals;       // композиція: список звернень
+        private List<Citizen> citizens;     // композиція: список громадян
+        private List<Executor> executors;   // композиція: список виконавців
+        private string cityName;            // назва міста
+        private int appealCounter;          // лічильник для генерації ID звернень
 
-        // Шляхи до файлів
+        // Шляхи до файлів даних
         private string citizensFile;
         private string appealsFile;
 
@@ -21,6 +24,7 @@ namespace SmartPortal.Core
             get { return cityName; }
         }
 
+        // Повертає копії списків — захист від змін ззовні
         public List<Appeal> Appeals
         {
             get { return new List<Appeal>(appeals); }
@@ -31,6 +35,11 @@ namespace SmartPortal.Core
             get { return new List<Citizen>(citizens); }
         }
 
+        public List<Executor> Executors
+        {
+            get { return new List<Executor>(executors); }
+        }
+
         public SmartPortal(string cityName, string citizensFile, string appealsFile)
         {
             this.cityName = cityName;
@@ -38,26 +47,28 @@ namespace SmartPortal.Core
             this.appealsFile = appealsFile;
             this.appeals = new List<Appeal>();
             this.citizens = new List<Citizen>();
+            this.executors = new List<Executor>();
             this.appealCounter = 0;
 
-            // Завантажуємо дані з файлів при запуску
+            // Завантажуємо всі дані з файлів при запуску
             LoadCitizens();
             LoadAppeals();
+            LoadExecutors();
         }
 
-        // Завантаження громадян із файлу
+        // ========== ЗАВАНТАЖЕННЯ ДАНИХ ==========
+
         private void LoadCitizens()
         {
             if (!File.Exists(citizensFile))
-                return;  // файлу немає — працюємо з порожнім списком
+                return;
 
-            string[] lines = File.ReadAllLines(citizensFile, System.Text.Encoding.GetEncoding(1251));
+            string[] lines = File.ReadAllLines(citizensFile, Encoding.GetEncoding(1251));
             foreach (string line in lines)
             {
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
-                // Розбиваємо рядок за символом ;
                 string[] parts = line.Split(';');
                 if (parts.Length >= 6)
                 {
@@ -68,13 +79,12 @@ namespace SmartPortal.Core
             Console.WriteLine($"Завантажено {citizens.Count} громадян із файлу");
         }
 
-        // Завантаження звернень із файлу
         private void LoadAppeals()
         {
             if (!File.Exists(appealsFile))
                 return;
 
-            string[] lines = File.ReadAllLines(appealsFile, System.Text.Encoding.GetEncoding(1251));
+            string[] lines = File.ReadAllLines(appealsFile, Encoding.GetEncoding(1251));
             foreach (string line in lines)
             {
                 if (string.IsNullOrWhiteSpace(line))
@@ -94,7 +104,7 @@ namespace SmartPortal.Core
                     var appeal = new Appeal(id, citizenId, authorName, content, date, status, executor);
                     appeals.Add(appeal);
 
-                    // Оновлюємо лічильник — витягуємо номер із ID
+                    // Оновлюємо лічильник
                     if (id.StartsWith("A") && int.TryParse(id.Substring(1), out int num))
                     {
                         if (num > appealCounter)
@@ -105,7 +115,31 @@ namespace SmartPortal.Core
             Console.WriteLine($"Завантажено {appeals.Count} звернень із файлу");
         }
 
-        // Збереження всіх звернень у файл
+        // Завантаження виконавців із файлу executors.txt
+        private void LoadExecutors()
+        {
+            string fileName = "executors.txt";
+            if (!File.Exists(fileName))
+                return;
+
+            string[] lines = File.ReadAllLines(fileName, Encoding.GetEncoding(1251));
+            foreach (string line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                string[] parts = line.Split(';');
+                if (parts.Length >= 3)
+                {
+                    var executor = new Executor(parts[0], parts[1], parts[2]);
+                    executors.Add(executor);
+                }
+            }
+            Console.WriteLine($"Завантажено {executors.Count} виконавців із файлу");
+        }
+
+        // ========== ЗБЕРЕЖЕННЯ ==========
+
         private void SaveAppeals()
         {
             List<string> lines = new List<string>();
@@ -113,10 +147,11 @@ namespace SmartPortal.Core
             {
                 lines.Add(a.ToFileString());
             }
-            File.WriteAllLines(appealsFile, lines, System.Text.Encoding.GetEncoding(1251));
+            File.WriteAllLines(appealsFile, lines, Encoding.GetEncoding(1251));
         }
 
-        // Пошук громадянина за ID
+        // ========== ПОШУК ==========
+
         public Citizen FindCitizenById(string id)
         {
             foreach (var c in citizens)
@@ -127,7 +162,6 @@ namespace SmartPortal.Core
             throw new CitizenNotFoundException(id);
         }
 
-        // Отримати історію звернень громадянина
         public List<Appeal> GetAppealsByCitizenId(string citizenId)
         {
             List<Appeal> result = new List<Appeal>();
@@ -139,8 +173,22 @@ namespace SmartPortal.Core
             return result;
         }
 
-        public Appeal CreateAppeal(Citizen author, string content)
+        // ========== ВИКОНАВЦІ ==========
 
+        // Автоматичний пошук вільного виконавця
+        public Executor AutoAssignExecutor()
+        {
+            foreach (var e in executors)
+            {
+                if (e.CanTakeMoreAppeals())
+                    return e;
+            }
+            return null;  // усі зайняті
+        }
+
+        // ========== ЗВЕРНЕННЯ ==========
+
+        public Appeal CreateAppeal(Citizen author, string content)
         {
             if (author == null)
                 throw new ArgumentNullException(nameof(author));
@@ -158,13 +206,22 @@ namespace SmartPortal.Core
 
             var appeal = new Appeal(id, author.Id, $"{author.LastName} {author.FirstName}", content);
             appeals.Add(appeal);
-            SaveAppeals();
 
+            // Автоматичне призначення виконавця
+            Executor executor = AutoAssignExecutor();
+            if (executor != null)
+            {
+                appeal.Status = AppealStatus.InProgress;
+                appeal.Executor = executor.Name;
+                executor.AssignAppeal(appeal.Id);
+                Console.WriteLine($"{Messages.ExecutorAssigned}: {executor.Name}");
+            }
+
+            SaveAppeals();
             Console.WriteLine($"Створено: {appeal}");
             return appeal;
-
         }
-        // Зміна статусу звернення
+
         public void UpdateAppealStatus(string appealId, AppealStatus newStatus, string executor)
         {
             foreach (var a in appeals)
@@ -181,13 +238,35 @@ namespace SmartPortal.Core
             throw new AppealNotFoundException(appealId);
         }
 
-        // Реєстрація нового громадянина
+        // Додавання готового звернення (для UrgentAppeal)
+        public void AddAppeal(Appeal appeal)
+        {
+            if (appeal == null)
+                throw new ArgumentNullException("Звернення не може бути null");
+
+            appeals.Add(appeal);
+
+            // Також пробуємо призначити виконавця
+            Executor executor = AutoAssignExecutor();
+            if (executor != null)
+            {
+                appeal.Status = AppealStatus.InProgress;
+                appeal.Executor = executor.Name;
+                executor.AssignAppeal(appeal.Id);
+                Console.WriteLine($"{Messages.ExecutorAssigned}: {executor.Name}");
+            }
+
+            SaveAppeals();
+            Console.WriteLine($"Створено: {appeal}");
+        }
+
+        // ========== РЕЄСТРАЦІЯ ==========
+
         public void RegisterCitizen(Citizen citizen)
         {
             if (citizen == null)
                 throw new ArgumentNullException(nameof(citizen));
 
-            // Перевірка на дублікат
             foreach (var c in citizens)
             {
                 if (c.Id == citizen.Id)
@@ -196,19 +275,8 @@ namespace SmartPortal.Core
 
             citizens.Add(citizen);
             File.AppendAllText(citizensFile, citizen.ToFileString() + Environment.NewLine,
-                               System.Text.Encoding.GetEncoding(1251));
+                               Encoding.GetEncoding(1251));
             Console.WriteLine($"Зареєстровано: {citizen}");
-        }
-
-        // Додавання готового звернення (для UrgentAppeal)
-        public void AddAppeal(Appeal appeal)
-        {
-            if (appeal == null)
-                throw new ArgumentNullException("Звернення не може бути null");
-
-            appeals.Add(appeal);
-            SaveAppeals();
-            Console.WriteLine($"Створено: {appeal}");
         }
     }
 }
